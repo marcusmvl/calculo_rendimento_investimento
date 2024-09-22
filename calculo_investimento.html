@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Rendimento de Investimento com Inflação</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        input {
+            padding: 8px;
+            width: calc(100% - 16px);
+        }
+        button {
+            padding: 10px 15px;
+            margin-top: 10px;
+        }
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Calculadora de Rendimento de Investimento com Inflação</h1>
+
+<label for="aporteInicial">Aporte Inicial (R$):</label>
+<input type="number" id="aporteInicial" required>
+
+<label for="aporteMensal">Aporte Mensal (R$):</label>
+<input type="number" id="aporteMensal" required>
+
+<label for="taxaJuro">Taxa de Juros Anual (%):</label>
+<input type="number" step="0.01" id="taxaJuro" required>
+
+<label for="taxaInflacao">Taxa de Inflação Anual (%):</label>
+<input type="number" step="0.01" id="taxaInflacao" required>
+
+<label for="periodo">Período (meses):</label>
+<input type="number" id="periodo" required>
+
+<button onclick="calcularRendimento()">Calcular</button>
+
+<div class="result" id="resultado"></div>
+
+<script>
+function calcularRendimento() {
+    const aporteInicial = parseFloat(document.getElementById('aporteInicial').value);
+    const aporteMensal = parseFloat(document.getElementById('aporteMensal').value);
+    const taxaJuro = parseFloat(document.getElementById('taxaJuro').value) / 100 / 12; // Taxa mensal
+    const taxaInflacao = parseFloat(document.getElementById('taxaInflacao').value) / 100 / 12; // Taxa mensal
+    const periodo = parseInt(document.getElementById('periodo').value);
+
+    let total = aporteInicial;
+    const totalAportes = aporteInicial + (aporteMensal * periodo);
+    
+    for (let i = 0; i < periodo; i++) {
+        total = total * (1 + taxaJuro) + aporteMensal;
+    }
+
+    // Cálculo do valor ajustado pela inflação
+    const valorAjustado = total / Math.pow((1 + taxaInflacao), periodo / 12);
+    const rendimentoReal = valorAjustado - totalAportes; // Rendimento descontando a inflação
+
+    document.getElementById('resultado').innerText = `
+        Total Investido: R$ ${totalAportes.toFixed(2)}
+        Total após ${periodo} meses: R$ ${total.toFixed(2)}
+        (R$ ${valorAjustado.toFixed(2)} ajustado pela inflação)
+        Rendimento Real (descontando a inflação): R$ ${rendimentoReal.toFixed(2)}
+    `;
+}
+</script>
+
+</body>
+</html>
